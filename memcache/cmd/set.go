@@ -20,8 +20,9 @@ import (
 	"io/ioutil"
 	"os"
 
-	"github.com/seiji/cache"
 	"github.com/spf13/cobra"
+
+	"github.com/seiji/cache"
 )
 
 var (
@@ -34,7 +35,11 @@ var setCmd = &cobra.Command{
 	Long:  "Set object into memcachd",
 	Args: func(cmd *cobra.Command, args []string) error {
 		if len(args) != 1 {
-			return errors.New("Accepts 1 arg(s)")
+			return errors.New("Specify key")
+		}
+		key := args[0]
+		if err := checkKey(key); err != nil {
+			return err
 		}
 		return nil
 	},
@@ -48,7 +53,6 @@ var setCmd = &cobra.Command{
 
 		key := args[0]
 		c := cache.New(host, port)
-
 		if err = c.Set(&cache.Item{
 			Key:        key,
 			Value:      value,

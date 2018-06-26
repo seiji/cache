@@ -17,17 +17,16 @@ package cmd
 import (
 	"errors"
 	"fmt"
-	"os"
 
 	"github.com/spf13/cobra"
 
 	"github.com/seiji/cache"
 )
 
-var getCmd = &cobra.Command{
-	Use:   "get",
-	Short: "Get object from memcached",
-	Long:  "Get object from memcached",
+var deleteCmd = &cobra.Command{
+	Use:   "delete",
+	Short: "Delete object from memcached",
+	Long:  "Delete object from memcached",
 	Args: func(cmd *cobra.Command, args []string) error {
 		if len(args) != 1 {
 			return errors.New("Specify key")
@@ -42,13 +41,14 @@ var getCmd = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 		key := args[0]
 		c := cache.New(host, port)
-		var item *cache.Item
+
 		var err error
-		if item, err = c.Get(key); err != nil && !cache.ResumableErr(err) {
+		if err = c.Delete(key); err != nil && !cache.ResumableErr(err) {
 			return err
 		}
+
 		if err == nil {
-			fmt.Fprint(os.Stdout, string(item.Value[:]))
+			fmt.Println("OK")
 		} else {
 			fmt.Println(err)
 		}
@@ -57,5 +57,5 @@ var getCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(getCmd)
+	rootCmd.AddCommand(deleteCmd)
 }

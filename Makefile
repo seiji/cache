@@ -4,7 +4,7 @@ VERSION  := HEAD
 REVISION := $(shell git rev-parse --short HEAD)
 BRANCH   := $(shell git rev-parse --abbrev-ref HEAD)
 SRC      := $(shell find . -type f -name '*.go' -not -path "./vendor/*")
-TARGET   := ./memcache/cmd/
+TARGET   := ./memcache/
 
 LDFLAGS  := -ldflags="-s -w -X \"main.Name=$(NAME)\" -X \"main.Version=$(VERSION)\" -X \"main.Revision=$(REVISION)\" -extldflags \"-static\""
 

@@ -25,8 +25,15 @@ func (c *memClient) Decrement(key string, delta uint64) (uint64, error) {
 	return c.cli.Decrement(key, delta)
 }
 
-func (c *memClient) Delete(key string) error {
-	return c.cli.Delete(key)
+func (c *memClient) Delete(key string) (err error) {
+	err = c.cli.Delete(key)
+	if err != nil && err == memcache.ErrCacheMiss {
+		err = ErrCacheMiss
+	}
+	if err != nil {
+		return
+	}
+	return
 }
 
 func (c *memClient) DeleteAll() error {

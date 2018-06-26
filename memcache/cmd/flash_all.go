@@ -15,47 +15,27 @@
 package cmd
 
 import (
-	"errors"
 	"fmt"
-	"os"
 
 	"github.com/spf13/cobra"
 
 	"github.com/seiji/cache"
 )
 
-var getCmd = &cobra.Command{
-	Use:   "get",
-	Short: "Get object from memcached",
-	Long:  "Get object from memcached",
-	Args: func(cmd *cobra.Command, args []string) error {
-		if len(args) != 1 {
-			return errors.New("Specify key")
-		}
-		key := args[0]
-		if err := checkKey(key); err != nil {
-			return err
-		}
-
-		return nil
-	},
-	RunE: func(cmd *cobra.Command, args []string) error {
-		key := args[0]
+var flushAllCmd = &cobra.Command{
+	Use:   "flush_all",
+	Short: "Flush all",
+	Long:  "Flush all",
+	RunE: func(cmd *cobra.Command, args []string) (err error) {
 		c := cache.New(host, port)
-		var item *cache.Item
-		var err error
-		if item, err = c.Get(key); err != nil && !cache.ResumableErr(err) {
-			return err
+		if err = c.FlushAll(); err != nil {
+			return
 		}
-		if err == nil {
-			fmt.Fprint(os.Stdout, string(item.Value[:]))
-		} else {
-			fmt.Println(err)
-		}
-		return nil
+		fmt.Println("OK")
+		return
 	},
 }
 
 func init() {
-	rootCmd.AddCommand(getCmd)
+	rootCmd.AddCommand(flushAllCmd)
 }
