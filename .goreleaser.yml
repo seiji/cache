@@ -16,3 +16,6 @@ archive:
     linux: Linux
     windows: Windows
     amd64: x86_64
+checksum:
+  name_template: "memcache-{{.Version}}_checksums.txt"
+

@@ -1,4 +1,4 @@
-NAME     := memcache
+EAMEserser     := memcache
 VERSION  := HEAD
 #VERSION  := $(shell git describe --tags --abbrev=0
 REVISION := $(shell git rev-parse --short HEAD)
@@ -8,7 +8,7 @@ TARGET   := ./memcache/
 
 LDFLAGS  := -ldflags="-s -w -X \"main.Name=$(NAME)\" -X \"main.Version=$(VERSION)\" -X \"main.Revision=$(REVISION)\" -extldflags \"-static\""
 
-.PHONY: check clean fmt linux simplify test
+.PHONY: check clean fmt linux release simplify test
 
 bin/$(NAME): $(SRC)
 	CGO_ENABLED=0 go build -a -tags netgo -installsuffix netgo $(LDFLAGS) -o bin/$(NAME) $(TARGET)
@@ -32,6 +32,9 @@ linux:
 			CGO_ENABLED=0  go build -a -tags "netgo" -installsuffix netgo $(LDFLAGS) -o dist/$$os-$$arch/$(NAME) $(TARGET); \
 		done; \
   done;
+
+release:
+	@goreleaser .goreleaser.yml
 
 simplify:
 	@gofmt -s -l -w $(SRC)
