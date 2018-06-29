@@ -34,7 +34,7 @@ linux:
   done;
 
 release:
-	@goreleaser .goreleaser.yml
+	@goreleaser --rm-dist
 
 simplify:
 	@gofmt -s -l -w $(SRC)
